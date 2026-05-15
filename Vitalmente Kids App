@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VitalMente Kids - Dra. Wilda O’neill Corpus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        body { 
+            font-family: 'Quicksand', sans-serif; 
+            background: #fff9f0; 
+            color: #4338ca;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .card-kid { border-radius: 2rem; background: white; border: 4px solid #eef2ff; box-shadow: 0 8px 0px #e2e8f0; transition: all 0.2s; }
+        .card-kid:active { transform: translateY(4px); box-shadow: 0 2px 0px #e2e8f0; }
+        
+        .btn-sos-kids { background: #ff6b6b; color: white; border-radius: 1.5rem; border-bottom: 6px solid #ee5253; }
+        
+        .bubble-anim { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        .star-breath { width: 150px; height: 150px; transition: all 4s ease-in-out; }
+        .star-breath.inhale { transform: scale(1.5); color: #ffd93d; }
+        .star-breath.exhale { transform: scale(0.8); color: #ff8e3c; }
+
+        .nav-kids { background: white; border-top: 4px solid #f0f4ff; border-radius: 2.5rem 2.5rem 0 0; }
+        
+        ::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="min-h-screen pb-32">
+
+    <!-- HEADER MÁGICO -->
+    <header class="p-6 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-indigo-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">
+                <i class="fas fa-rocket"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold text-indigo-900 leading-none">VitalMente Kids</h1>
+                <p class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider">Dra. Wilda O’neill</p>
+            </div>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="toggleSOS()" class="btn-sos-kids px-4 py-2 font-black text-sm shadow-xl">¡AYUDA!</button>
+            <button onclick="sendKidsReport()" class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="p-5 space-y-6">
+
+        <!-- BOTÓN SOS PARA NIÑOS -->
+        <section id="view-sos" class="view hidden fixed inset-0 bg-indigo-50 z-[100] p-6 flex flex-col items-center justify-center text-center">
+            <button onclick="toggleSOS()" class="absolute top-6 right-6 text-indigo-200 text-3xl"><i class="fas fa-circle-xmark"></i></button>
+            
+            <h2 class="text-3xl font-black text-indigo-600 mb-2">¡Respira conmigo!</h2>
+            <p id="sos-msg-kids" class="text-indigo-400 font-bold mb-8">La estrellita te ayuda a calmarte.</p>
+
+            <div id="star-container" class="star-breath mb-12">
+                <i class="fas fa-star text-8xl"></i>
+            </div>
+
+            <h3 id="sos-inst-kids" class="text-2xl font-black text-indigo-900 mb-8">¿Listo?</h3>
+            
+            <button onclick="startKidsSOS()" id="sos-btn-start" class="w-full py-5 bg-indigo-600 text-white rounded-3xl font-black text-lg shadow-2xl">¡EMPEZAR JUEGO!</button>
+        </section>
+
+        <!-- PANTALLA INICIAL -->
+        <section id="view-selector" class="view space-y-6">
+            <div class="card-kid p-6 bg-gradient-to-br from-indigo-500 to-purple-600 text-white relative overflow-hidden">
+                <h2 class="text-2xl font-black mb-1">¡Hola, Campeón!</h2>
+                <p class="text-sm opacity-90 font-medium">¿Cómo se siente tu corazón hoy?</p>
+                <i class="fas fa-face-grin-stars absolute -right-4 -bottom-4 text-8xl opacity-20"></i>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Depresión -> Jardín -->
+                <div onclick="openModule('jardin')" class="card-kid p-5 border-b-8 border-b-yellow-400 space-y-3 text-center">
+                    <div class="w-14 h-14 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-2xl mx-auto"><i class="fas fa-sun"></i></div>
+                    <h3 class="font-bold text-sm">El Jardín</h3>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">Alegría</p>
+                </div>
+                <!-- Ansiedad -> Burbujas -->
+                <div onclick="openModule('burbujas')" class="card-kid p-5 border-b-8 border-b-sky-400 space-y-3 text-center">
+                    <div class="w-14 h-14 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-2xl mx-auto"><i class="fas fa-cloud"></i></div>
+                    <h3 class="font-bold text-sm">Burbujas</h3>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">Calma</p>
+                </div>
+                <!-- Autoestima -> Súper Yo -->
+                <div onclick="openModule('super')" class="card-kid p-5 border-b-8 border-b-rose-400 space-y-3 text-center">
+                    <div class="w-14 h-14 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-2xl mx-auto"><i class="fas fa-shield-heart"></i></div>
+                    <h3 class="font-bold text-sm">Súper Yo</h3>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">Poder</p>
+                </div>
+                <!-- Estrés -> Escudo -->
+                <div onclick="openModule('escudo')" class="card-kid p-5 border-b-8 border-b-emerald-400 space-y-3 text-center">
+                    <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto"><i class="fas fa-bolt"></i></div>
+                    <h3 class="font-bold text-sm">Escudo</h3>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">Estrés</p>
+                </div>
+            </div>
+
+            <!-- Recordatorio Visual Niño -->
+            <div class="p-5 bg-indigo-50 rounded-[2rem] border-2 border-indigo-100 flex items-center gap-4">
+                <div class="text-3xl">💡</div>
+                <div>
+                    <p class="text-xs font-black text-indigo-900">Misión del día:</p>
+                    <p class="text-[11px] text-indigo-600">Dibuja algo que te haga reír mucho.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- JARDÍN DE LA ALEGRÍA -->
+        <section id="view-jardin" class="view hidden space-y-5">
+            <button onclick="showView('selector')" class="text-indigo-300 font-bold flex items-center gap-2"><i class="fas fa-arrow-left"></i> Volver</button>
+            <div class="card-kid p-6 space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-[10px] font-black uppercase">Fábrica de Sonrisas</span>
+                </div>
+                <h3 class="font-black text-lg">Mis Misiones Mágicas</h3>
+                <div id="kids-tasks" class="space-y-3"></div>
+                <button onclick="openKidsModal('jardin')" class="w-full py-4 bg-yellow-400 text-yellow-900 rounded-2xl font-black text-sm">+ NUEVA MISIÓN</button>
+            </div>
+        </section>
+
+        <!-- BURBUJAS DE CALMA -->
+        <section id="view-burbujas" class="view hidden space-y-5 text-center">
+            <button onclick="showView('selector')" class="text-sky-300 font-bold flex items-center gap-2"><i class="fas fa-arrow-left"></i> Volver</button>
+            <div class="card-kid p-8 space-y-6">
+                <h3 class="font-black text-xl">Atrapa el Aire</h3>
+                <div class="w-32 h-32 bg-sky-100 rounded-full mx-auto flex items-center justify-center bubble-anim">
+                    <i class="fas fa-wind text-4xl text-sky-500"></i>
+                </div>
+                <p class="text-sm text-slate-500 font-medium px-4">Imagina que soplas una burbuja de jabón gigante muy despacito...</p>
+                <button onclick="startKidsBreath()" id="kb-btn" class="w-full py-5 bg-sky-500 text-white rounded-3xl font-black text-lg">¡SOPLAR!</button>
+            </div>
+        </section>
+
+        <!-- SÚPER YO -->
+        <section id="view-super" class="view hidden space-y-5">
+            <button onclick="showView('selector')" class="text-rose-300 font-bold flex items-center gap-2"><i class="fas fa-arrow-left"></i> Volver</button>
+            <div class="card-kid p-6 space-y-6">
+                <h3 class="font-black text-xl text-rose-600">Mi Álbum de Superpoderes</h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-rose-50 rounded-2xl border-2 border-rose-100">
+                        <p class="text-[10px] font-black text-rose-400 uppercase">Hoy me siento valiente porque:</p>
+                        <textarea id="kids-power" class="w-full bg-transparent border-none text-sm font-bold text-rose-900 mt-2" placeholder="Escribe tu logro..."></textarea>
+                    </div>
+                    <button onclick="savePower()" class="w-full py-4 bg-rose-500 text-white rounded-2xl font-black">¡GUARDAR PODER!</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ESCUDO RELÁMPAGO -->
+        <section id="view-escudo" class="view hidden space-y-5">
+            <button onclick="showView('selector')" class="text-emerald-300 font-bold flex items-center gap-2"><i class="fas fa-arrow-left"></i> Volver</button>
+            <div class="card-kid p-6 space-y-4">
+                <h3 class="font-black text-xl text-emerald-600">Escudo contra el Estrés</h3>
+                <p class="text-xs text-slate-500 font-medium">Cuando estés enojado, aprieta tus manos como si tuvieras limones y luego suelta el jugo.</p>
+                <button onclick="runLemon()" class="w-full py-6 bg-emerald-500 text-white rounded-3xl font-black text-xl shadow-lg">¡EXPRIMIR LIMÓN!</button>
+                <div id="lemon-msg" class="text-center font-black text-emerald-400 h-6"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL NIÑOS -->
+    <div id="modal-kids" class="fixed inset-0 bg-indigo-900/50 backdrop-blur-md z-[110] hidden items-center justify-center p-8">
+        <div class="card-kid w-full max-w-xs p-8 space-y-6 text-center">
+            <h3 class="font-black text-indigo-900 text-xl">¿Qué quieres lograr?</h3>
+            <input id="modal-field-kids" type="text" class="w-full p-4 bg-indigo-50 rounded-2xl border-none font-bold text-center" placeholder="Ej: Jugar futbol">
+            <button onclick="confirmKidsInput()" class="w-full py-4 bg-indigo-600 text-white rounded-2xl font-black shadow-xl">¡LISTO!</button>
+            <button onclick="closeKidsModal()" class="text-xs font-black text-slate-300 uppercase">Ahora no</button>
+        </div>
+    </div>
+
+    <!-- NAVBAR KIDS -->
+    <nav class="fixed bottom-0 left-0 right-0 nav-kids p-4 flex justify-around items-end z-[90] h-24">
+        <button onclick="showView('selector')" class="flex flex-col items-center text-indigo-600"><i class="fas fa-house text-2xl"></i><span class="text-[10px] font-black mt-1">CASA</span></button>
+        <button onclick="openModule('jardin')" class="flex flex-col items-center text-slate-300"><i class="fas fa-sun text-2xl"></i><span class="text-[10px] font-black mt-1">JARDÍN</span></button>
+        <button onclick="openModule('burbujas')" class="flex flex-col items-center text-slate-300"><i class="fas fa-cloud text-2xl"></i><span class="text-[10px] font-black mt-1">CALMA</span></button>
+        <button onclick="openModule('super')" class="flex flex-col items-center text-slate-300"><i class="fas fa-shield-heart text-2xl"></i><span class="text-[10px] font-black mt-1">PODER</span></button>
+    </nav>
+
+    <script>
+        const PROFESIONAL_EMAIL = "wildaoneillcorpus@gmail.com";
+        let state = { jardin: [], super: [] };
+        let currentTarget = '';
+
+        function showView(id) {
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`view-${id}`).classList.remove('hidden');
+        }
+
+        function toggleSOS() { document.getElementById('view-sos').classList.toggle('hidden'); }
+
+        function startKidsSOS() {
+            const star = document.getElementById('star-container');
+            const inst = document.getElementById('sos-inst-kids');
+            const btn = document.getElementById('sos-btn-start');
+            const msg = document.getElementById('sos-msg-kids');
+            
+            btn.disabled = true;
+            let cycle = 0;
+            const run = () => {
+                if (cycle % 2 === 0) {
+                    star.classList.add('inhale'); star.classList.remove('exhale');
+                    inst.innerText = "¡TOMA AIRE!";
+                    msg.innerText = "Como si olieras una flor...";
+                } else {
+                    star.classList.add('exhale'); star.classList.remove('inhale');
+                    inst.innerText = "¡SUELTA AIRE!";
+                    msg.innerText = "Como si soplaras una vela...";
+                }
+                cycle++;
+                if(cycle < 8) setTimeout(run, 4000);
+                else { btn.disabled = false; inst.innerText = "¡Muy bien!"; btn.innerText = "¡Ya estoy mejor!"; }
+            };
+            run();
+        }
+
+        function openModule(mod) {
+            showView(mod);
+            if(mod === 'jardin') renderJardin();
+        }
+
+        function startKidsBreath() {
+            const btn = document.getElementById('kb-btn');
+            btn.disabled = true;
+            let count = 4;
+            const i = setInterval(() => {
+                btn.innerText = "SOPLANDO... " + count;
+                count--;
+                if(count < 0) { clearInterval(i); btn.innerText = "¡BURBUJA LISTA!"; btn.disabled = false; }
+            }, 1000);
+        }
+
+        function runLemon() {
+            const msg = document.getElementById('lemon-msg');
+            msg.innerText = "¡APRIETA FUERTE! 🍋";
+            setTimeout(() => { msg.innerText = "¡AHORA SUELTA...!"; }, 3000);
+            setTimeout(() => { msg.innerText = "¡Qué relajado!"; }, 5000);
+        }
+
+        function renderJardin() {
+            const l = document.getElementById('kids-tasks');
+            l.innerHTML = state.jardin.map((t, i) => `
+                <div onclick="state.jardin[${i}].d=!state.jardin[${i}].d;renderJardin()" class="p-5 card-kid flex items-center justify-between cursor-pointer">
+                    <span class="font-bold ${t.d ? 'line-through text-slate-300' : 'text-indigo-900'}">${t.n}</span>
+                    <i class="fas ${t.d ? 'fa-check-circle text-yellow-400' : 'fa-circle text-slate-100'} text-2xl"></i>
+                </div>
+            `).join('');
+        }
+
+        function openKidsModal(t) { currentTarget = t; document.getElementById('modal-kids').classList.replace('hidden', 'flex'); }
+        function closeKidsModal() { document.getElementById('modal-kids').classList.replace('flex', 'hidden'); }
+
+        function confirmKidsInput() {
+            const v = document.getElementById('modal-field-kids').value;
+            if(!v) return;
+            if(currentTarget === 'jardin') { state.jardin.push({n: v, d: false}); renderJardin(); }
+            closeKidsModal();
+            document.getElementById('modal-field-kids').value = '';
+        }
+
+        function savePower() {
+            const p = document.getElementById('kids-power').value;
+            if(!p) return;
+            state.super.push(p);
+            document.getElementById('kids-power').value = '';
+            alert("¡Poder guardado en tu escudo!");
+        }
+
+        function sendKidsReport() {
+            let b = `REPORTE VITALMENTE KIDS\nPacientes infantiles - Dra. Wilda O’neill\n\n`;
+            b += `1. EL JARDÍN: Misiones logradas: ${state.jardin.filter(x=>x.d).length}/${state.jardin.length}\n`;
+            b += `2. BURBUJAS: Práctica de respiración completada.\n`;
+            b += `3. SÚPER YO: Poderes registrados: ${state.super.length}\n`;
+            window.location.href = `mailto:${PROFESIONAL_EMAIL}?subject=Seguimiento Infantil VitalMente&body=${encodeURIComponent(b)}`;
+        }
+    </script>
+</body>
+</html>
